@@ -2,3 +2,11 @@ language: go
 
 go: 
   - master # get the latest version from source
+before install:
+  - go get github.com/axw/gocov/...
+  - go get github.com/AlekSi/gocov-xml
+  - git clone https://github.com/Bachmann1234/diff-cover.git && cd diff-cover && python setup.py install && cd -
+script: 
+  - go test -coverprofile=coverage.txt -covermode=atomic ./...
+  - gocov convert coverage.txt  | gocov-xml > coverage.xml
+  - diff-cover coverage.xml --html-report report.html 
